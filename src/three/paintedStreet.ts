@@ -115,8 +115,10 @@ uniform float glow;
 varying vec3 vDir;
 void main() {
   vec3 d = normalize( vDir );
-  vec3 mid = mix( horizonColor, topColor, 0.52 ) + sunTint * 0.04 * glow;
-  vec3 col = d.y < 0.07 ? horizonColor : ( d.y < 0.24 ? mid : topColor );
+  vec3 mid = mix( horizonColor, topColor, 0.45 ) + sunTint * 0.06 * glow;
+  vec3 col = mix( horizonColor, mid, smoothstep( -0.02, 0.22, d.y ) );
+  col = mix( col, topColor, smoothstep( 0.14, 0.75, d.y ) );
+  col += ( fract( sin( dot( gl_FragCoord.xy, vec2( 12.9898, 78.233 ) ) ) * 43758.5453 ) - 0.5 ) / 255.0;
   gl_FragColor = vec4( col, 1.0 );
   #include <colorspace_fragment>
 }
@@ -564,7 +566,7 @@ export async function loadRealStreetWorld(
 
   const skyMat = new THREE.ShaderMaterial({
     uniforms: {
-      topColor: { value: new THREE.Color('#241d38') },
+      topColor: { value: new THREE.Color('#3a2d6e') },
       horizonColor: { value: new THREE.Color('#9d5b42') },
       sunTint: { value: new THREE.Color('#f5a623') },
       glow: { value: 0.75 },
